@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	Users "orc-api/internal/api/users"
-	Database "orc-api/internal/database"
-	Shared "orc-api/internal/shared"
+	Users "go-template-api/internal/api/users"
+	Database "go-template-api/internal/database"
+	Shared "go-template-api/internal/shared"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -23,7 +23,7 @@ func main() {
 		}
 	}
 
-	Database.Start()
+	Database.Start(Shared.GetEnvVars().DB_USER, Shared.GetEnvVars().DB_PASSWORD, Shared.GetEnvVars().DB_NAME)
 
 	if len(args) > 1 {
 		if args[1] == "migrations:up" {

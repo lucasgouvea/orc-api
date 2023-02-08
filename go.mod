@@ -1,4 +1,4 @@
-module orc-api
+module go-template-api
 
 go 1.19
 

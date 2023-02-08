@@ -1,5 +1,7 @@
+run:
+	go run go-template-api
 # Migrations
 mig-up:
-	go run orc-api migrations:up
+	go run go-template-api migrations:up
 mig-down:
-	go run orc-api migrations:down
+	go run go-template-api migrations:down

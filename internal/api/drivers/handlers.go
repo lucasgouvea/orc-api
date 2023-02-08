@@ -1,4 +1,4 @@
-package users
+package drivers
 
 import (
 	"net/http"
@@ -10,15 +10,15 @@ import (
 )
 
 func RegisterRoutes(router *gin.RouterGroup) {
-	router.GET("/users", GetUsers)
-	router.POST("/users", PostUser)
-	router.PATCH("/users/:id", PatchUser)
+	router.GET("/drivers", GetDrivers)
+	router.POST("/drivers", PostDriver)
+	router.PATCH("/drivers/:id", PatchDriver)
 }
 
-func GetUsers(ctx *gin.Context) {
+func GetDrivers(ctx *gin.Context) {
 	var err error
 	var params Shared.Params
-	var users []User
+	var drivers []Driver
 
 	query := ctx.Request.URL.Query()
 
@@ -27,36 +27,36 @@ func GetUsers(ctx *gin.Context) {
 		return
 	}
 
-	if users, err = listUsers(params); err != nil {
+	if drivers, err = listDrivers(params); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, users)
+	ctx.JSON(http.StatusOK, drivers)
 }
 
-func PostUser(ctx *gin.Context) {
-	schema := UserPostSchema{}
+func PostDriver(ctx *gin.Context) {
+	schema := DriverPostSchema{}
 	if err := ctx.ShouldBindWith(&schema, binding.JSON); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	user := schema.parse()
+	driver := schema.parse()
 
-	if err := createUser(user); err != nil {
+	if err := createDriver(driver); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, user)
+	ctx.JSON(http.StatusOK, driver)
 }
 
-func PatchUser(ctx *gin.Context) {
-	var user *User
+func PatchDriver(ctx *gin.Context) {
+	var driver *Driver
 	var err error
 
-	schema := UserPatchSchema{}
+	schema := DriverPatchSchema{}
 	id := ctx.Param("id")
 
 	if err := ctx.ShouldBindWith(&schema, binding.JSON); err != nil {
@@ -64,15 +64,15 @@ func PatchUser(ctx *gin.Context) {
 		return
 	}
 
-	if user, err = schema.parse(id); err != nil {
+	if driver, err = schema.parse(id); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	if err := updateUser(user); err != nil {
+	if err := updateDriver(driver); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, user)
+	ctx.JSON(http.StatusOK, driver)
 }
