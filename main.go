@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	Users "go-template-api/internal/api/users"
-	Database "go-template-api/internal/database"
-	Shared "go-template-api/internal/shared"
+	Users "orc-api/internal/api/users"
+	Database "orc-api/internal/database"
+	Shared "orc-api/internal/shared"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"

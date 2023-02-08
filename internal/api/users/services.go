@@ -1,7 +1,7 @@
 package users
 
 import (
-	Database "go-template-api/internal/database"
+	Database "orc-api/internal/database"
 )
 
 func CreateUser(user User) error {

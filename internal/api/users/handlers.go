@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	Shared "go-template-api/internal/shared"
+	Shared "orc-api/internal/shared"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"

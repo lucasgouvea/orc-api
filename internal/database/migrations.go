@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	Shared "go-template-api/internal/shared"
+	Shared "orc-api/internal/shared"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
