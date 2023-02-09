@@ -45,6 +45,7 @@ func startAPI() {
 	v1Router := router.Group("/v1")
 
 	Users.RegisterRoutes(v1Router)
+	Drivers.RegisterRoutes(v1Router)
 
 	router.Run("localhost:8080")
 }
