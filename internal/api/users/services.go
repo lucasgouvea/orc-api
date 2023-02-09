@@ -1,9 +1,9 @@
 package users
 
 import (
-	Database "go-template-api/internal/database"
-	Errors "go-template-api/internal/errors"
-	Shared "go-template-api/internal/shared"
+	Database "orc-api/internal/database"
+	Errors "orc-api/internal/errors"
+	Shared "orc-api/internal/shared"
 
 	"gorm.io/gorm/clause"
 )

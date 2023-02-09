@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	Users "go-template-api/internal/api/users"
-	Database "go-template-api/internal/database"
-	Shared "go-template-api/internal/shared"
+	Drivers "orc-api/internal/api/drivers"
+	Users "orc-api/internal/api/users"
+	Database "orc-api/internal/database"
+	Shared "orc-api/internal/shared"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -50,13 +51,13 @@ func startAPI() {
 
 func migrationsUp() {
 	fmt.Println(" *** Migrations Up ***")
-	models := []any{&Users.User{}}
+	models := []any{&Users.User{}, &Drivers.Driver{}}
 	Database.Migrate(models)
 	Users.Seed()
 }
 
 func migrationsDown() {
 	fmt.Println(" *** Migrations Down ***")
-	tables := []string{"users"}
+	tables := []string{"users", "drivers"}
 	Database.Drop(tables)
 }

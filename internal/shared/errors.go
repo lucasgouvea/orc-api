@@ -3,8 +3,8 @@ package shared
 import (
 	"encoding/json"
 	"errors"
-	Errors "go-template-api/internal/errors"
 	"net/http"
+	Errors "orc-api/internal/errors"
 	"strings"
 
 	"github.com/go-playground/validator/v10"

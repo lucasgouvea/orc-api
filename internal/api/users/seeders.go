@@ -1,7 +1,7 @@
 package users
 
 import (
-	Shared "go-template-api/internal/shared"
+	Shared "orc-api/internal/shared"
 )
 
 const DEFAULT_USER_NAME = "admin"
