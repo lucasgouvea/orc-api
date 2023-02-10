@@ -7,13 +7,13 @@ import (
 type Driver struct {
 	ID        int       `json:"id" gorm:"primarykey"`
 	CreatedAt time.Time `json:"created_at" `
-	Name      string    `json:"name" binding:"required"`
-	Age       string    `json:"age" binding:"required"`
-	LicenseA  bool      `json:"license_a" binding:"required"`
-	LicenseB  bool      `json:"license_b" binding:"required"`
-	LicenseC  bool      `json:"license_c" binding:"required"`
-	LicenseD  bool      `json:"license_d" binding:"required"`
-	LicenseE  bool      `json:"license_e" binding:"required"`
+	Name      string    `json:"name"`
+	Age       int       `json:"age"`
+	LicenseA  *bool     `json:"license_a" gorm:"default:false"`
+	LicenseB  *bool     `json:"license_b" gorm:"default:false"`
+	LicenseC  *bool     `json:"license_c" gorm:"default:false"`
+	LicenseD  *bool     `json:"license_d" gorm:"default:false"`
+	LicenseE  *bool     `json:"license_e" gorm:"default:false"`
 }
 
 type Tabler interface {

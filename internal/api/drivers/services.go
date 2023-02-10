@@ -9,9 +9,10 @@ import (
 )
 
 func listDrivers(params Shared.Params) ([]Driver, error) {
+	fields := []string{"id", "created_at", "name", "age", "license_a", "license_b", "license_c", "license_d", "license_e"}
 	drivers := []Driver{}
 	db := Database.GetDB()
-	err := db.Limit(params.Limit).Offset(params.Offset).Select("id", "created_at", "name").Find(&drivers).Error
+	err := db.Limit(params.Limit).Offset(params.Offset).Select(fields).Find(&drivers).Error
 	return drivers, err
 }
 
@@ -21,10 +22,12 @@ func createDriver(driver *Driver) error {
 	return err
 }
 
-func updateDriver(driver *Driver) error {
+func updateDriver(id int, schema DriverPatchSchema) error {
+	driverMap := schema.parse(id)
+
 	db := Database.GetDB()
-	res := db.Clauses(clause.Returning{}).Where("id = ?", driver.ID).Updates(driver)
-	if res.RowsAffected == 0 {
+	res := db.Model(&Driver{}).Clauses(clause.Returning{}).Where("id = ?", id).Updates(driverMap)
+	if res.Error == nil && res.RowsAffected == 0 {
 		return Errors.ResourceNotFoundErr
 	}
 	return res.Error

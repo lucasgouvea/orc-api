@@ -2,6 +2,7 @@ package drivers
 
 import (
 	"net/http"
+	"strconv"
 
 	Shared "orc-api/internal/shared"
 
@@ -53,26 +54,25 @@ func PostDriver(ctx *gin.Context) {
 }
 
 func PatchDriver(ctx *gin.Context) {
-	var driver *Driver
+	var id int
 	var err error
 
 	schema := DriverPatchSchema{}
-	id := ctx.Param("id")
+
+	if id, err = strconv.Atoi(ctx.Param("id")); err != nil {
+		Shared.HandleErr(ctx, err)
+		return
+	}
 
 	if err := ctx.ShouldBindWith(&schema, binding.JSON); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	if driver, err = schema.parse(id); err != nil {
+	if err := updateDriver(id, schema); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	if err := updateDriver(driver); err != nil {
-		Shared.HandleErr(ctx, err)
-		return
-	}
-
-	ctx.JSON(http.StatusOK, driver)
+	ctx.JSON(http.StatusOK, id)
 }
