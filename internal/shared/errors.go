@@ -42,7 +42,7 @@ func parseInvalidJSONErr(err error) *Errors.HttpErr {
 func parseInvalidPayloadErr(err error) *Errors.HttpErr {
 	var unmarshalTypeError *json.UnmarshalTypeError
 	if errors.As(err, &unmarshalTypeError) {
-		var description = "Payload field " + unmarshalTypeError.Field + "should be of type" + unmarshalTypeError.Type.Name()
+		var description = "Payload field '" + unmarshalTypeError.Field + "' should be of type '" + unmarshalTypeError.Type.Name() + "'"
 		return &Errors.HttpErr{Status: http.StatusBadRequest, Description: description}
 	}
 

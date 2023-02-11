@@ -16,10 +16,12 @@ func listDrivers(params Shared.Params) ([]Driver, error) {
 	return drivers, err
 }
 
-func createDriver(driver *Driver) error {
+func createDriver(schema DriverPostSchema) (*Driver, error) {
+	driver := schema.parse()
+
 	db := Database.GetDB()
 	err := db.Clauses(clause.Returning{}).Create(&driver).Error
-	return err
+	return driver, err
 }
 
 func updateDriver(id int, schema DriverPatchSchema) error {

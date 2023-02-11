@@ -37,20 +37,21 @@ func GetDrivers(ctx *gin.Context) {
 }
 
 func PostDriver(ctx *gin.Context) {
+	var driver *Driver
+	var err error
+
 	schema := DriverPostSchema{}
-	if err := ctx.ShouldBindWith(&schema, binding.JSON); err != nil {
+	if err = ctx.ShouldBindWith(&schema, binding.JSON); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	driver := schema.parse()
-
-	if err := createDriver(driver); err != nil {
+	if driver, err = createDriver(schema); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, driver)
+	ctx.JSON(http.StatusOK, *driver)
 }
 
 func PatchDriver(ctx *gin.Context) {

@@ -1,14 +1,13 @@
 package drivers
 
 type DriverPostSchema struct {
-	Id       int    `json:"id"`
 	Name     string `json:"name" binding:"required"`
 	Age      int    `json:"age" binding:"required,min=18,max=100"`
-	LicenseA bool   `json:"license_a" binding:"required"`
-	LicenseB bool   `json:"license_b" binding:"required"`
-	LicenseC bool   `json:"license_c" binding:"required"`
-	LicenseD bool   `json:"license_d" binding:"required"`
-	LicenseE bool   `json:"license_e" binding:"required"`
+	LicenseA *bool  `json:"license_a" binding:"required"`
+	LicenseB *bool  `json:"license_b" binding:"required"`
+	LicenseC *bool  `json:"license_c" binding:"required"`
+	LicenseD *bool  `json:"license_d" binding:"required"`
+	LicenseE *bool  `json:"license_e" binding:"required"`
 }
 
 type DriverPatchSchema struct {
@@ -25,11 +24,11 @@ func (d DriverPostSchema) parse() *Driver {
 	driver := Driver{}
 	driver.Name = d.Name
 	driver.Age = d.Age
-	driver.LicenseA = &d.LicenseA
-	driver.LicenseB = &d.LicenseB
-	driver.LicenseC = &d.LicenseC
-	driver.LicenseD = &d.LicenseD
-	driver.LicenseE = &d.LicenseE
+	driver.LicenseA = *d.LicenseA
+	driver.LicenseB = *d.LicenseB
+	driver.LicenseC = *d.LicenseC
+	driver.LicenseD = *d.LicenseD
+	driver.LicenseE = *d.LicenseE
 	return &driver
 }
 
