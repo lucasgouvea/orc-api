@@ -9,6 +9,7 @@ import (
 	Database "orc-api/internal/database"
 	Shared "orc-api/internal/shared"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -42,6 +43,14 @@ func main() {
 
 func startAPI() error {
 	router := gin.Default()
+
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://orc-spa.s3-website-us-east-1.amazonaws.com"},
+		AllowMethods:     []string{"GET", "PATCH", "POST", "DELETE"},
+		AllowHeaders:     []string{"Origin", "content-type"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 
 	v1Router := router.Group("/v1")
 
