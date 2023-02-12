@@ -14,6 +14,7 @@ func RegisterRoutes(router *gin.RouterGroup) {
 	router.GET("/drivers", GetDrivers)
 	router.POST("/drivers", PostDriver)
 	router.PATCH("/drivers/:id", PatchDriver)
+	router.DELETE("/drivers/:id", DeleteDriver)
 }
 
 func GetDrivers(ctx *gin.Context) {
@@ -71,6 +72,23 @@ func PatchDriver(ctx *gin.Context) {
 	}
 
 	if err := updateDriver(id, schema); err != nil {
+		Shared.HandleErr(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, id)
+}
+
+func DeleteDriver(ctx *gin.Context) {
+	var id int
+	var err error
+
+	if id, err = strconv.Atoi(ctx.Param("id")); err != nil {
+		Shared.HandleErr(ctx, err)
+		return
+	}
+
+	if err := deleteDriver(id); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}

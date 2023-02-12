@@ -34,3 +34,12 @@ func updateDriver(id int, schema DriverPatchSchema) error {
 	}
 	return res.Error
 }
+
+func deleteDriver(id int) error {
+	db := Database.GetDB()
+	res := db.Delete(&Driver{}, id)
+	if res.Error == nil && res.RowsAffected == 0 {
+		return Errors.ResourceNotFoundErr
+	}
+	return res.Error
+}
