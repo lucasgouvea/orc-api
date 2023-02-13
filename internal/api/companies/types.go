@@ -1,9 +1,5 @@
 package companies
 
-import (
-	"errors"
-)
-
 type companyType int
 
 const (
@@ -18,11 +14,7 @@ func (c companyType) String() string {
 	case CONTRACT:
 		return "CONTRACT"
 	}
-	panic(errors.New("Invalid company type!"))
-}
-
-func (c companyType) Int() int {
-	return int(c)
+	panic(InvalidCompanyTypeErr)
 }
 
 func toCompanyType(c string) companyType {
@@ -32,7 +24,7 @@ func toCompanyType(c string) companyType {
 	case "CONTRACT":
 		return CONTRACT
 	}
-	panic(errors.New("Invalid company type string!"))
+	panic(InvalidCompanyTypeErr)
 }
 
 func getCompanyTypes() []string {

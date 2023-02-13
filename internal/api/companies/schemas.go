@@ -1,8 +1,17 @@
 package companies
 
 import (
+	"time"
+
 	"github.com/go-playground/validator/v10"
 )
+
+type CompanySchema struct {
+	ID        int       `json:"id" `
+	CreatedAt time.Time `json:"created_at" `
+	Name      string    `json:"name"`
+	Type      string    `json:"type"`
+}
 
 type CompanyPostSchema struct {
 	Name string `json:"name" binding:"required"`
@@ -17,7 +26,7 @@ type CompanyPatchSchema struct {
 func (c CompanyPostSchema) parse() *Company {
 	company := Company{}
 	company.Name = c.Name
-	company.Type = toCompanyType(c.Type).Int()
+	company.Type = int(toCompanyType(c.Type))
 	return &company
 }
 
@@ -28,7 +37,7 @@ func (c CompanyPatchSchema) parse(id int) map[string]any {
 		m["name"] = *c.Name
 	}
 	if c.Type != nil {
-		m["type"] = toCompanyType(*c.Type).Int()
+		m["type"] = int(toCompanyType(*c.Type))
 	}
 
 	return m

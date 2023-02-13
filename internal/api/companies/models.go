@@ -1,16 +1,14 @@
 package companies
 
 import (
-	"database/sql/driver"
-	"errors"
 	"time"
 )
 
 type Company struct {
-	ID        int       `json:"id" gorm:"primarykey"`
-	CreatedAt time.Time `json:"created_at" `
-	Name      string    `json:"name"`
-	Type      int       `json:"type"`
+	ID        int `gorm:"primarykey"`
+	CreatedAt time.Time
+	Name      string
+	Type      int
 }
 
 type Tabler interface {
@@ -21,14 +19,25 @@ func (Company) TableName() string {
 	return "companies"
 }
 
-func (c *companyType) Scan(value any) error {
-	_, ok := value.([]byte)
-	if !ok {
-		return errors.New("Failed scan for companyType")
+func (c Company) getType() companyType {
+	switch c.Type {
+	case int(AGGREGATE):
+		{
+			return AGGREGATE
+		}
+	case int(CONTRACT):
+		{
+			return CONTRACT
+		}
 	}
-	return nil
+	panic(InvalidCompanyTypeErr)
 }
 
-func (c *companyType) Value() (driver.Value, error) {
-	return 1, nil
+func (c Company) toSchema() CompanySchema {
+	return CompanySchema{
+		ID:        c.ID,
+		CreatedAt: c.CreatedAt,
+		Name:      c.Name,
+		Type:      c.getType().String(),
+	}
 }

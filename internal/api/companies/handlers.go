@@ -20,7 +20,7 @@ func RegisterRoutes(router *gin.RouterGroup) {
 func GetCompanies(ctx *gin.Context) {
 	var err error
 	var params Shared.Params
-	var companies []Company
+	var schemas []CompanySchema
 
 	query := ctx.Request.URL.Query()
 
@@ -29,30 +29,31 @@ func GetCompanies(ctx *gin.Context) {
 		return
 	}
 
-	if companies, err = listCompanies(params); err != nil {
+	if schemas, err = listCompanies(params); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, companies)
+	ctx.JSON(http.StatusOK, schemas)
 }
 
 func PostCompany(ctx *gin.Context) {
-	var company *Company
 	var err error
 
-	schema := CompanyPostSchema{}
-	if err = ctx.ShouldBindWith(&schema, binding.JSON); err != nil {
+	schema := CompanySchema{}
+	postSchema := CompanyPostSchema{}
+
+	if err = ctx.ShouldBindWith(&postSchema, binding.JSON); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	if company, err = createCompany(schema); err != nil {
+	if schema, err = createCompany(postSchema); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, *company)
+	ctx.JSON(http.StatusOK, schema)
 }
 
 func PatchCompany(ctx *gin.Context) {

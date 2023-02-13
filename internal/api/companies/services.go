@@ -8,20 +8,25 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-func listCompanies(params Shared.Params) ([]Company, error) {
+func listCompanies(params Shared.Params) ([]CompanySchema, error) {
 	fields := []string{"id", "created_at", "name", "type"}
 	companies := []Company{}
+	schemas := []CompanySchema{}
 	db := Database.GetDB()
 	err := db.Limit(params.Limit).Offset(params.Offset).Select(fields).Find(&companies).Error
-	return companies, err
+
+	for _, c := range companies {
+		schemas = append(schemas, c.toSchema())
+	}
+	return schemas, err
 }
 
-func createCompany(schema CompanyPostSchema) (*Company, error) {
+func createCompany(schema CompanyPostSchema) (CompanySchema, error) {
 	company := schema.parse()
 
 	db := Database.GetDB()
 	err := db.Clauses(clause.Returning{}).Create(&company).Error
-	return company, err
+	return company.toSchema(), err
 }
 
 func updateCompany(id int, schema CompanyPatchSchema) error {
