@@ -25,7 +25,7 @@ func createDriver(schema DriverPostSchema) (*Driver, error) {
 }
 
 func updateDriver(id int, schema DriverPatchSchema) error {
-	driverMap := schema.parse(id)
+	driverMap := schema.parse()
 
 	db := Database.GetDB()
 	res := db.Model(&Driver{}).Clauses(clause.Returning{}).Where("id = ?", id).Updates(driverMap)

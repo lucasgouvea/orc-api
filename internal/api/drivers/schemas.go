@@ -32,7 +32,7 @@ func (d DriverPostSchema) parse() *Driver {
 	return &driver
 }
 
-func (d DriverPatchSchema) parse(id int) map[string]any {
+func (d DriverPatchSchema) parse() map[string]any {
 	var m map[string]any = make(map[string]any)
 
 	if d.Name != nil {
