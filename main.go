@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	Company "orc-api/internal/api/companies"
 	Drivers "orc-api/internal/api/drivers"
 	Users "orc-api/internal/api/users"
 	Vehicles "orc-api/internal/api/vehicles"
@@ -12,6 +13,8 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 )
 
@@ -24,6 +27,11 @@ func main() {
 		if err := godotenv.Load(); err != nil {
 			panic(err)
 		}
+	}
+
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterValidation("required_company_type", Company.ValidateCompanyType)
+		v.RegisterValidation("optional_company_type", Company.ValidateOptionalCompanyType)
 	}
 
 	Database.Start(Shared.GetEnvVars().DB_HOST, Shared.GetEnvVars().DB_USER, Shared.GetEnvVars().DB_PASSWORD, Shared.GetEnvVars().DB_NAME)
@@ -58,13 +66,14 @@ func startAPI() error {
 	Users.RegisterRoutes(v1Router)
 	Drivers.RegisterRoutes(v1Router)
 	Vehicles.RegisterRoutes(v1Router)
+	Company.RegisterRoutes(v1Router)
 
 	return router.Run("0.0.0.0:8081")
 }
 
 func migrate() error {
 	fmt.Println(" *** Running migrations ***")
-	models := []any{&Users.User{}, &Drivers.Driver{}, &Vehicles.Vehicle{}}
+	models := []any{&Users.User{}, &Drivers.Driver{}, &Vehicles.Vehicle{}, &Company.Company{}}
 	return Database.Migrate(models)
 }
 
