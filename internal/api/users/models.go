@@ -1,6 +1,7 @@
 package users
 
 import (
+	Shared "orc-api/internal/shared"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -9,7 +10,7 @@ import (
 type BaseSchema = any
 
 type User struct {
-	ID        int       `json:"id" gorm:"primarykey"`
+	Shared.Model
 	CreatedAt time.Time `json:"created_at"`
 	Name      string    `json:"name"`
 	Password  string    `json:"-"`

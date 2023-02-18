@@ -1,16 +1,15 @@
 package companies
 
 import (
-	"time"
+	Shared "orc-api/internal/shared"
 )
 
 type Company struct {
-	ID              int `gorm:"primarykey"`
-	CreatedAt       time.Time
+	Shared.Model
 	Name            string
 	Type            int
 	IntermediatorID *uint
-	Intermediateds  []Company `gorm:"foreignkey:IntermediatorID"`
+	Intermediateds  []Company `gorm:"foreignkey:IntermediatorID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type Tabler interface {
@@ -42,7 +41,7 @@ func (c Company) getType() companyType {
 func (c Company) toSchema() *CompanySchema {
 	var intermediateds []CompanyIntermediatedSchema = make([]CompanyIntermediatedSchema, 0)
 	base := CompanyBaseSchema{
-		ID:        c.ID,
+		ID:        int(c.ID),
 		CreatedAt: c.CreatedAt,
 		Name:      c.Name,
 		Type:      c.getType().String(),
@@ -51,7 +50,7 @@ func (c Company) toSchema() *CompanySchema {
 	for _, i := range c.Intermediateds {
 		intermediateds = append(intermediateds, CompanyIntermediatedSchema{
 			CompanyBaseSchema{
-				ID:        i.ID,
+				ID:        int(i.ID),
 				CreatedAt: i.CreatedAt,
 				Name:      i.Name,
 				Type:      i.getType().String(),

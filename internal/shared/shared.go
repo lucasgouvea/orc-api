@@ -3,6 +3,7 @@ package shared
 import (
 	"net/url"
 	"strconv"
+	"time"
 	"unicode"
 	"unicode/utf8"
 
@@ -12,6 +13,12 @@ import (
 type Params struct {
 	Limit  int
 	Offset int
+}
+
+type Model struct {
+	ID        uint `gorm:"primaryKey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 const DEFAULT_LIMIT = 10

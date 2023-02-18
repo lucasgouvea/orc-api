@@ -12,7 +12,7 @@ type VehiclePatchSchema struct {
 
 func (v VehiclePostSchema) parse() *Vehicle {
 	vehicle := Vehicle{}
-	vehicle.Model = v.Model
+	vehicle.ModelDescription = v.Model
 	vehicle.LicensePlate = v.LicensePlate
 	return &vehicle
 }

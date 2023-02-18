@@ -27,7 +27,7 @@ func (u UserPatchSchema) parse(_id string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	user.ID = id
+	user.ID = uint(id)
 	user.Name = u.Name
 	user.Password = u.Password
 	return &user, err
