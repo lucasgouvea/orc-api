@@ -5,10 +5,12 @@ import (
 )
 
 type Company struct {
-	ID        int `gorm:"primarykey"`
-	CreatedAt time.Time
-	Name      string
-	Type      int
+	ID              int `gorm:"primarykey"`
+	CreatedAt       time.Time
+	Name            string
+	Type            int
+	IntermediatorID *uint
+	Intermediateds  []Company `gorm:"foreignkey:IntermediatorID"`
 }
 
 type Tabler interface {
@@ -29,15 +31,44 @@ func (c Company) getType() companyType {
 		{
 			return CONTRACT
 		}
+	case int(INTERMEDIATED):
+		{
+			return CONTRACT
+		}
 	}
 	panic(InvalidCompanyTypeErr)
 }
 
-func (c Company) toSchema() CompanySchema {
-	return CompanySchema{
+func (c Company) toSchema() *CompanySchema {
+	var intermediateds []CompanyIntermediatedSchema = make([]CompanyIntermediatedSchema, 0)
+	base := CompanyBaseSchema{
 		ID:        c.ID,
 		CreatedAt: c.CreatedAt,
 		Name:      c.Name,
 		Type:      c.getType().String(),
 	}
+
+	for _, i := range c.Intermediateds {
+		intermediateds = append(intermediateds, CompanyIntermediatedSchema{
+			CompanyBaseSchema{
+				ID:        i.ID,
+				CreatedAt: i.CreatedAt,
+				Name:      i.Name,
+				Type:      i.getType().String(),
+			},
+		})
+	}
+
+	if c.Type == int(AGGREGATE) {
+		return &CompanySchema{
+			base,
+			intermediateds,
+		}
+	}
+
+	return &CompanySchema{
+		base,
+		intermediateds,
+	}
+
 }

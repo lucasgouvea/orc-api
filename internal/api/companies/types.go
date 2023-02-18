@@ -5,6 +5,7 @@ type companyType int
 const (
 	AGGREGATE companyType = iota + 1
 	CONTRACT
+	INTERMEDIATED
 )
 
 func (c companyType) String() string {
@@ -13,22 +14,26 @@ func (c companyType) String() string {
 		return "AGGREGATE"
 	case CONTRACT:
 		return "CONTRACT"
+	case INTERMEDIATED:
+		return "INTERMEDIATED"
 	}
 	panic(InvalidCompanyTypeErr)
 }
 
-func toCompanyType(c string) companyType {
+func NewCompanyType(c string) companyType {
 	switch c {
 	case "AGGREGATE":
 		return AGGREGATE
 	case "CONTRACT":
 		return CONTRACT
+	case "INTERMEDIATED":
+		return INTERMEDIATED
 	}
 	panic(InvalidCompanyTypeErr)
 }
 
 func getCompanyTypes() []string {
-	return []string{"AGGREGATE", "CONTRACT"}
+	return []string{"AGGREGATE", "CONTRACT", "INTERMEDIATED"}
 }
 
 func isCompanyType(ct string) bool {

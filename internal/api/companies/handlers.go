@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	Errors "orc-api/internal/errors"
 	Shared "orc-api/internal/shared"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +21,7 @@ func RegisterRoutes(router *gin.RouterGroup) {
 func GetCompanies(ctx *gin.Context) {
 	var err error
 	var params Shared.Params
-	var schemas []CompanySchema
+	var schemas []*CompanySchema
 
 	query := ctx.Request.URL.Query()
 
@@ -40,7 +41,7 @@ func GetCompanies(ctx *gin.Context) {
 func PostCompany(ctx *gin.Context) {
 	var err error
 
-	schema := CompanySchema{}
+	var schema *CompanySchema
 	postSchema := CompanyPostSchema{}
 
 	if err = ctx.ShouldBindWith(&postSchema, binding.JSON); err != nil {
@@ -49,7 +50,14 @@ func PostCompany(ctx *gin.Context) {
 	}
 
 	if schema, err = createCompany(postSchema); err != nil {
-		Shared.HandleErr(ctx, err)
+		if err == MissingIntermediatedErr || err == ContractIntermediatedErr {
+			ctx.JSON(http.StatusBadRequest, Errors.HttpErr{
+				Status:      http.StatusBadRequest,
+				Description: err.Error(),
+			})
+		} else {
+			Shared.HandleErr(ctx, err)
+		}
 		return
 	}
 
