@@ -12,10 +12,6 @@ type Company struct {
 	Intermediateds  []Company `gorm:"foreignkey:IntermediatorID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
-type Tabler interface {
-	TableName() string
-}
-
 func (Company) TableName() string {
 	return "companies"
 }
@@ -38,7 +34,7 @@ func (c Company) getType() companyType {
 	panic(InvalidCompanyTypeErr)
 }
 
-func (c Company) toSchema() *CompanySchema {
+func (c Company) Schema() *CompanySchema {
 	var intermediateds []CompanyIntermediatedSchema = make([]CompanyIntermediatedSchema, 0)
 	base := CompanyBaseSchema{
 		ID:        int(c.ID),
@@ -69,5 +65,4 @@ func (c Company) toSchema() *CompanySchema {
 		base,
 		intermediateds,
 	}
-
 }

@@ -12,10 +12,6 @@ type Vehicle struct {
 	LicensePlate     string    `json:"license_plate"`
 }
 
-type Tabler interface {
-	TableName() string
-}
-
 func (Vehicle) TableName() string {
 	return "vehicles"
 }

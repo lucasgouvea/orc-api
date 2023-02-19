@@ -16,10 +16,6 @@ type User struct {
 	Password  string    `json:"-"`
 }
 
-type Tabler interface {
-	TableName() string
-}
-
 func (User) TableName() string {
 	return "users"
 }

@@ -16,7 +16,7 @@ func listCompanies(params Shared.Params) ([]*CompanySchema, error) {
 	err := db.Limit(params.Limit).Offset(params.Offset).Select(fields).Preload("Intermediateds").Not("type = ?", int(INTERMEDIATED)).Find(&companies).Error
 
 	for _, c := range companies {
-		schemas = append(schemas, c.toSchema())
+		schemas = append(schemas, c.Schema())
 	}
 	return schemas, err
 }
@@ -31,7 +31,7 @@ func createCompany(schema CompanyPostSchema) (*CompanySchema, error) {
 
 	db := Database.GetDB()
 	err = db.Clauses(clause.Returning{}).Create(&company).Error
-	return company.toSchema(), err
+	return company.Schema(), err
 }
 
 func updateCompany(id int, schema CompanyPatchSchema) error {

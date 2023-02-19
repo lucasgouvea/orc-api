@@ -15,10 +15,6 @@ type Driver struct {
 	LicenseE bool   `json:"license_e" gorm:"default:false"`
 }
 
-type Tabler interface {
-	TableName() string
-}
-
 func (Driver) TableName() string {
 	return "drivers"
 }

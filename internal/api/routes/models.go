@@ -18,8 +18,22 @@ type RoutePlan struct {
 
 type Route struct {
 	Shared.Model
-	Company   Companies.Company
-	Driver    Drivers.Driver
-	RouteType routeType
-	Date      time.Time
+	CompanyID   uint
+	DriverID    uint
+	RoutePlanID uint
+	Company     Companies.Company
+	Driver      Drivers.Driver
+	RouteType   routeType
+	Date        time.Time
+}
+
+func (RoutePlan) TableName() string {
+	return "route_plans"
+}
+
+func (rp RoutePlan) Schema() RoutePlanSchema {
+	return RoutePlanSchema{
+		EndDate:   rp.EndDate,
+		StartDate: rp.StartDate,
+	}
 }

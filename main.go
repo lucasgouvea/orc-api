@@ -6,8 +6,10 @@ import (
 
 	Company "orc-api/internal/api/companies"
 	Drivers "orc-api/internal/api/drivers"
+	Routes "orc-api/internal/api/routes"
 	Users "orc-api/internal/api/users"
 	Vehicles "orc-api/internal/api/vehicles"
+
 	Database "orc-api/internal/database"
 	Shared "orc-api/internal/shared"
 
@@ -67,13 +69,14 @@ func startAPI() error {
 	Drivers.RegisterRoutes(v1Router)
 	Vehicles.RegisterRoutes(v1Router)
 	Company.RegisterRoutes(v1Router)
+	Routes.RegisterRoutes(v1Router)
 
 	return router.Run("0.0.0.0:8081")
 }
 
 func migrate() error {
 	fmt.Println(" *** Running migrations ***")
-	models := []any{&Users.User{}, &Drivers.Driver{}, &Vehicles.Vehicle{}, &Company.Company{}}
+	models := []any{&Users.User{}, &Drivers.Driver{}, &Vehicles.Vehicle{}, &Company.Company{}, &Routes.RoutePlan{}}
 	return Database.Migrate(models)
 }
 
