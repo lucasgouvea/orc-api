@@ -34,7 +34,7 @@ func (c Company) getType() companyType {
 	panic(InvalidCompanyTypeErr)
 }
 
-func (c Company) Schema() *CompanySchema {
+func (c Company) Schema() CompanySchema {
 	var intermediateds []CompanyIntermediatedSchema = make([]CompanyIntermediatedSchema, 0)
 	base := CompanyBaseSchema{
 		ID:        int(c.ID),
@@ -55,13 +55,13 @@ func (c Company) Schema() *CompanySchema {
 	}
 
 	if c.Type == int(AGGREGATE) {
-		return &CompanySchema{
+		return CompanySchema{
 			base,
 			intermediateds,
 		}
 	}
 
-	return &CompanySchema{
+	return CompanySchema{
 		base,
 		intermediateds,
 	}

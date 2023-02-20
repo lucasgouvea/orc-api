@@ -14,12 +14,13 @@ func RegisterRoutes(router *gin.RouterGroup) {
 	router.GET("/route_plans", GetRoutePlans)
 	router.POST("/route_plans", PostRoutePlan)
 	router.PATCH("/route_plans/:id", PatchRoutePlan)
+	router.DELETE("/route_plans/:id", DeleteRoutePlan)
 }
 
 func GetRoutePlans(ctx *gin.Context) {
 	var err error
 	var params Shared.Params
-	var plans []RoutePlan
+	var schemas []RoutePlanSchema
 
 	query := ctx.Request.URL.Query()
 
@@ -28,12 +29,12 @@ func GetRoutePlans(ctx *gin.Context) {
 		return
 	}
 
-	if plans, err = listRoutePlans(params); err != nil {
+	if schemas, err = listRoutePlans(params); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, plans)
+	ctx.JSON(http.StatusOK, schemas)
 }
 
 func PostRoutePlan(ctx *gin.Context) {
@@ -54,7 +55,6 @@ func PostRoutePlan(ctx *gin.Context) {
 }
 
 func PatchRoutePlan(ctx *gin.Context) {
-	var route *Route
 	var err error
 	var id int
 
@@ -74,5 +74,22 @@ func PatchRoutePlan(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, route)
+	ctx.JSON(http.StatusOK, id)
+}
+
+func DeleteRoutePlan(ctx *gin.Context) {
+	var id int
+	var err error
+
+	if id, err = strconv.Atoi(ctx.Param("id")); err != nil {
+		Shared.HandleErr(ctx, err)
+		return
+	}
+
+	if err := deleteRoutePlan(id); err != nil {
+		Shared.HandleErr(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, id)
 }

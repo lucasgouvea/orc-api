@@ -21,7 +21,7 @@ func RegisterRoutes(router *gin.RouterGroup) {
 func GetCompanies(ctx *gin.Context) {
 	var err error
 	var params Shared.Params
-	var schemas []*CompanySchema
+	var schemas []CompanySchema
 
 	query := ctx.Request.URL.Query()
 

@@ -8,11 +8,15 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-func listRoutePlans(params Shared.Params) ([]RoutePlan, error) {
+func listRoutePlans(params Shared.Params) ([]RoutePlanSchema, error) {
 	plans := []RoutePlan{}
+	schemas := []RoutePlanSchema{}
 	db := Database.GetDB()
 	err := db.Limit(params.Limit).Offset(params.Offset).Select("id", "created_at", "end_date", "start_date").Find(&plans).Error
-	return plans, err
+	for _, p := range plans {
+		schemas = append(schemas, p.Schema())
+	}
+	return schemas, err
 }
 
 func createRoutePlan(schema RoutePlanPostSchema) (RoutePlanSchema, error) {
@@ -23,10 +27,19 @@ func createRoutePlan(schema RoutePlanPostSchema) (RoutePlanSchema, error) {
 }
 
 func updateRoutePlan(id int, schema RoutePlanPatchSchema) error {
-	m := schema.parse()
+	plan := schema.parse()
 	db := Database.GetDB()
-	res := db.Clauses(clause.Returning{}).Where("id = ?", id).Updates(m)
-	if res.RowsAffected == 0 {
+	res := db.Model(&RoutePlan{}).Clauses(clause.Returning{}).Where("id = ?", id).Updates(plan)
+	if res.Error == nil && res.RowsAffected == 0 {
+		return Errors.ResourceNotFoundErr
+	}
+	return res.Error
+}
+
+func deleteRoutePlan(id int) error {
+	db := Database.GetDB()
+	res := db.Delete(&RoutePlan{}, id)
+	if res.Error == nil && res.RowsAffected == 0 {
 		return Errors.ResourceNotFoundErr
 	}
 	return res.Error

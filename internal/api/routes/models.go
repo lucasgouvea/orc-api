@@ -3,6 +3,7 @@ package routes
 import (
 	Companies "orc-api/internal/api/companies"
 	Drivers "orc-api/internal/api/drivers"
+	"strconv"
 
 	Shared "orc-api/internal/shared"
 	"time"
@@ -33,6 +34,7 @@ func (RoutePlan) TableName() string {
 
 func (rp RoutePlan) Schema() RoutePlanSchema {
 	return RoutePlanSchema{
+		Id:        strconv.FormatUint(uint64(rp.ID), 10),
 		EndDate:   rp.EndDate,
 		StartDate: rp.StartDate,
 	}

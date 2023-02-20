@@ -8,10 +8,10 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-func listCompanies(params Shared.Params) ([]*CompanySchema, error) {
+func listCompanies(params Shared.Params) ([]CompanySchema, error) {
 	fields := []string{"id", "created_at", "name", "type"}
 	companies := []Company{}
-	schemas := []*CompanySchema{}
+	schemas := []CompanySchema{}
 	db := Database.GetDB()
 	err := db.Limit(params.Limit).Offset(params.Offset).Select(fields).Preload("Intermediateds").Not("type = ?", int(INTERMEDIATED)).Find(&companies).Error
 
@@ -21,24 +21,24 @@ func listCompanies(params Shared.Params) ([]*CompanySchema, error) {
 	return schemas, err
 }
 
-func createCompany(schema CompanyPostSchema) (*CompanySchema, error) {
+func createCompany(_schema CompanyPostSchema) (*CompanySchema, error) {
 	var err error
 	var company *Company
 
-	if company, err = schema.parse(); err != nil {
+	if company, err = _schema.parse(); err != nil {
 		return nil, err
 	}
-
 	db := Database.GetDB()
 	err = db.Clauses(clause.Returning{}).Create(&company).Error
-	return company.Schema(), err
+	schema := company.Schema()
+	return &schema, err
 }
 
 func updateCompany(id int, schema CompanyPatchSchema) error {
-	vehicleMap := schema.parse(id)
+	company := schema.parse(id)
 
 	db := Database.GetDB()
-	res := db.Model(&Company{}).Clauses(clause.Returning{}).Where("id = ?", id).Updates(vehicleMap)
+	res := db.Model(&Company{}).Clauses(clause.Returning{}).Where("id = ?", id).Updates(company)
 	if res.Error == nil && res.RowsAffected == 0 {
 		return Errors.ResourceNotFoundErr
 	}

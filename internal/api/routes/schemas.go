@@ -5,6 +5,7 @@ import (
 )
 
 type RoutePlanSchema struct {
+	Id        string    `json:"id"`
 	EndDate   time.Time `json:"end_date"`
 	StartDate time.Time `json:"start_date"`
 }
