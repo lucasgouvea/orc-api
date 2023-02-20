@@ -8,11 +8,11 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-func listRoutes(params Shared.Params) ([]Route, error) {
-	routes := []Route{}
+func listRoutePlans(params Shared.Params) ([]RoutePlan, error) {
+	plans := []RoutePlan{}
 	db := Database.GetDB()
-	err := db.Limit(params.Limit).Offset(params.Offset).Select("id", "created_at", "name").Find(&routes).Error
-	return routes, err
+	err := db.Limit(params.Limit).Offset(params.Offset).Select("id", "created_at", "end_date", "start_date").Find(&plans).Error
+	return plans, err
 }
 
 func createRoutePlan(schema RoutePlanPostSchema) (RoutePlanSchema, error) {
@@ -22,9 +22,10 @@ func createRoutePlan(schema RoutePlanPostSchema) (RoutePlanSchema, error) {
 	return plan.Schema(), err
 }
 
-func updateRoute(route *Route) error {
+func updateRoutePlan(id int, schema RoutePlanPatchSchema) error {
+	m := schema.parse()
 	db := Database.GetDB()
-	res := db.Clauses(clause.Returning{}).Where("id = ?", route.ID).Updates(route)
+	res := db.Clauses(clause.Returning{}).Where("id = ?", id).Updates(m)
 	if res.RowsAffected == 0 {
 		return Errors.ResourceNotFoundErr
 	}

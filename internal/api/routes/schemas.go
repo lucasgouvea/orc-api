@@ -14,9 +14,9 @@ type RoutePlanPostSchema struct {
 	StartDate time.Time `json:"start_date" binding:"required"`
 }
 
-type RoutePatchSchema struct {
-	Name     string `json:"name"`
-	Password string `json:"password"`
+type RoutePlanPatchSchema struct {
+	EndDate   *string `json:"end_date"`
+	StartDate *string `json:"start_date"`
 }
 
 func (r RoutePlanPostSchema) parse() RoutePlan {
@@ -26,15 +26,15 @@ func (r RoutePlanPostSchema) parse() RoutePlan {
 	return plan
 }
 
-/* func (u RoutePatchSchema) parse(_id string) (*Route, error) {
-	route := Route{}
+func (r RoutePlanPatchSchema) parse() map[string]any {
+	var m map[string]any = make(map[string]any)
 
-	id, err := strconv.Atoi(_id)
-	if err != nil {
-		return nil, err
+	if r.EndDate != nil {
+		m["end_date"] = *r.EndDate
 	}
-	route.ID = uint(id)
-	route.Name = u.Name
-	route.Password = u.Password
-	return &route, err
-} */
+	if r.StartDate != nil {
+		m["start_date"] = *r.StartDate
+	}
+
+	return m
+}

@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strconv"
 
 	Shared "orc-api/internal/shared"
 
@@ -10,32 +11,31 @@ import (
 )
 
 func RegisterRoutes(router *gin.RouterGroup) {
-	//router.GET("/routes", GetRoutes)
+	router.GET("/route_plans", GetRoutePlans)
 	router.POST("/route_plans", PostRoutePlan)
-	//router.PATCH("/routes/:id", PatchRoute)
+	router.PATCH("/route_plans/:id", PatchRoutePlan)
 }
 
-/*
-	 func GetRoutes(ctx *gin.Context) {
-		var err error
-		var params Shared.Params
-		var routes []Route
+func GetRoutePlans(ctx *gin.Context) {
+	var err error
+	var params Shared.Params
+	var plans []RoutePlan
 
-		query := ctx.Request.URL.Query()
+	query := ctx.Request.URL.Query()
 
-		if params, err = Shared.ParseQuery(query); err != nil {
-			Shared.HandleErr(ctx, err)
-			return
-		}
-
-		if routes, err = listRoutes(params); err != nil {
-			Shared.HandleErr(ctx, err)
-			return
-		}
-
-		ctx.JSON(http.StatusOK, routes)
+	if params, err = Shared.ParseQuery(query); err != nil {
+		Shared.HandleErr(ctx, err)
+		return
 	}
-*/
+
+	if plans, err = listRoutePlans(params); err != nil {
+		Shared.HandleErr(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, plans)
+}
+
 func PostRoutePlan(ctx *gin.Context) {
 
 	schema := RoutePlanPostSchema{}
@@ -53,28 +53,26 @@ func PostRoutePlan(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, plan)
 }
 
-/* func PatchRoute(ctx *gin.Context) {
+func PatchRoutePlan(ctx *gin.Context) {
 	var route *Route
 	var err error
+	var id int
 
-	schema := RoutePatchSchema{}
-	id := ctx.Param("id")
+	schema := RoutePlanPatchSchema{}
+	if id, err = strconv.Atoi(ctx.Param("id")); err != nil {
+		Shared.HandleErr(ctx, err)
+		return
+	}
 
 	if err := ctx.ShouldBindWith(&schema, binding.JSON); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	if route, err = schema.parse(id); err != nil {
-		Shared.HandleErr(ctx, err)
-		return
-	}
-
-	if err := updateRoute(route); err != nil {
+	if err := updateRoutePlan(int(id), schema); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
 	ctx.JSON(http.StatusOK, route)
 }
-*/
