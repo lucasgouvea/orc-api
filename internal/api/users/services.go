@@ -30,7 +30,10 @@ func createUser(user *User) error {
 }
 
 func updateUser(user *User) error {
-	user.hashPassword()
+	if len(user.Password) > 0 {
+		user.hashPassword()
+
+	}
 	db := Database.GetDB()
 	res := db.Clauses(clause.Returning{}).Where("id = ?", user.ID).Updates(user)
 	if res.RowsAffected == 0 {
@@ -59,6 +62,11 @@ func login(schema PostLoginSchema) (*AuthSchema, error) {
 	}
 
 	authSchema, err = getAuthSchema(user.Name, user.Password)
+
+	if err = updateUser(&User{Model: Shared.Model{ID: user.ID}, Token: authSchema.Token, TokenExpires: authSchema.ExpiresTime}); err != nil {
+		return nil, err
+	}
+
 	return authSchema, err
 }
 
@@ -78,8 +86,9 @@ func getAuthSchema(username string, pass string) (*AuthSchema, error) {
 	}
 
 	return &AuthSchema{
-		Name:    username,
-		Token:   tokenString,
-		Expires: claims.ExpiresAt.String(),
+		Name:        username,
+		Token:       tokenString,
+		Expires:     claims.ExpiresAt.String(),
+		ExpiresTime: claims.ExpiresAt.Time,
 	}, nil
 }

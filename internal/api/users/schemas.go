@@ -2,6 +2,7 @@ package users
 
 import (
 	"strconv"
+	"time"
 )
 
 /* USERS */
@@ -45,9 +46,10 @@ type PostLoginSchema struct {
 }
 
 type AuthSchema struct {
-	Name    string `json:"name"`
-	Token   string `json:"token"`
-	Expires string `json:"expires"`
+	Name        string    `json:"name"`
+	Token       string    `json:"token"`
+	Expires     string    `json:"expires"`
+	ExpiresTime time.Time `json:"-"`
 }
 
 func (p PostLoginSchema) parse() *User {

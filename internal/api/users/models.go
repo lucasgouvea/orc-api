@@ -11,10 +11,11 @@ type BaseSchema = any
 
 type User struct {
 	Shared.Model
-	CreatedAt time.Time `json:"created_at"`
-	Name      string    `json:"name"`
-	Password  string    `json:"-"`
-	Token     string    `json:"-"`
+	CreatedAt    time.Time `json:"created_at"`
+	Name         string    `json:"name"`
+	Password     string    `json:"-"`
+	Token        string    `json:"-"`
+	TokenExpires time.Time `json:"-"`
 }
 
 func (User) TableName() string {
