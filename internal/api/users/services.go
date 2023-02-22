@@ -5,6 +5,7 @@ import (
 	Errors "orc-api/internal/errors"
 	Shared "orc-api/internal/shared"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm/clause"
 )
 
@@ -30,4 +31,22 @@ func updateUser(user *User) error {
 		return Errors.ResourceNotFoundErr
 	}
 	return res.Error
+}
+
+func login(schema PostLoginSchema) error {
+	user := schema.parse()
+	pass := user.Password
+
+	db := Database.GetDB()
+	res := db.Where("name = ?", user.Name).First(&user)
+	if res.RowsAffected == 0 {
+		return InvalidUserNameErr
+	}
+	if res.Error != nil {
+		return res.Error
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass)); err != nil {
+		return InvalidUserPassErr
+	}
+	return nil
 }

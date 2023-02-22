@@ -19,3 +19,7 @@ run-c:
 	docker run -p 8081:8081 --env-file ./.env.container ${IMAGE}
 ssh:
 	ssh -i "${KEY_PATH}" ec2-user@${EC2_HOST}
+deploy:
+	make build
+	make login
+	make push

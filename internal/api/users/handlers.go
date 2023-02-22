@@ -13,6 +13,8 @@ func RegisterRoutes(router *gin.RouterGroup) {
 	router.GET("/users", GetUsers)
 	router.POST("/users", PostUser)
 	router.PATCH("/users/:id", PatchUser)
+
+	router.POST("/login", PostLogin)
 }
 
 func GetUsers(ctx *gin.Context) {
@@ -75,4 +77,22 @@ func PatchUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, user)
+}
+
+func PostLogin(ctx *gin.Context) {
+	var err error
+
+	schema := PostLoginSchema{}
+
+	if err = ctx.ShouldBindWith(&schema, binding.JSON); err != nil {
+		Shared.HandleErr(ctx, err)
+		return
+	}
+
+	if err = login(schema); err != nil {
+		Shared.HandleErr(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, "OK")
 }

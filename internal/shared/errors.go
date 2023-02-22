@@ -24,7 +24,7 @@ func GetHttpError(err error) *Errors.HttpErr {
 		return &Errors.HttpErr{Status: http.StatusNotFound, Description: err.Error()}
 	}
 
-	return &Errors.HttpErr{Status: http.StatusInternalServerError, Description: "Internal error"}
+	return &Errors.HttpErr{Status: http.StatusInternalServerError, Description: err.Error()}
 }
 
 func parseInvalidJSONErr(err error) *Errors.HttpErr {
