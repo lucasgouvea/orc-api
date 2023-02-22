@@ -56,7 +56,7 @@ func startAPI() error {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://orc-spa.s3-website-us-east-1.amazonaws.com"},
+		AllowOrigins:     []string{"https://orc.lucasgouvea.com"},
 		AllowMethods:     []string{"GET", "PATCH", "POST", "DELETE"},
 		AllowHeaders:     []string{"Origin", "content-type"},
 		ExposeHeaders:    []string{"Content-Length"},
