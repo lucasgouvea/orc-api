@@ -1,6 +1,8 @@
 package users
 
-import "strconv"
+import (
+	"strconv"
+)
 
 /* USERS */
 
@@ -40,6 +42,12 @@ func (u UserPatchSchema) parse(_id string) (*User, error) {
 type PostLoginSchema struct {
 	Name     string `json:"name"`
 	Password string `json:"password"`
+}
+
+type AuthSchema struct {
+	Name    string `json:"name"`
+	Token   string `json:"token"`
+	Expires string `json:"expires"`
 }
 
 func (p PostLoginSchema) parse() *User {

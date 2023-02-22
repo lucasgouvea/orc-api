@@ -14,6 +14,7 @@ type User struct {
 	CreatedAt time.Time `json:"created_at"`
 	Name      string    `json:"name"`
 	Password  string    `json:"-"`
+	Token     string    `json:"-"`
 }
 
 func (User) TableName() string {

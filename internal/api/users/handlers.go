@@ -80,6 +80,7 @@ func PatchUser(ctx *gin.Context) {
 }
 
 func PostLogin(ctx *gin.Context) {
+	var auth *AuthSchema
 	var err error
 
 	schema := PostLoginSchema{}
@@ -89,10 +90,10 @@ func PostLogin(ctx *gin.Context) {
 		return
 	}
 
-	if err = login(schema); err != nil {
+	if auth, err = login(schema); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, "OK")
+	ctx.JSON(http.StatusOK, auth)
 }

@@ -4,10 +4,16 @@ import (
 	Database "orc-api/internal/database"
 	Errors "orc-api/internal/errors"
 	Shared "orc-api/internal/shared"
+	"time"
 
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm/clause"
 )
+
+const JWT_KEY string = "SECRET"
+
+const TTL = 60
 
 func listUsers(params Shared.Params) ([]User, error) {
 	users := []User{}
@@ -33,20 +39,47 @@ func updateUser(user *User) error {
 	return res.Error
 }
 
-func login(schema PostLoginSchema) error {
+func login(schema PostLoginSchema) (*AuthSchema, error) {
+	var err error
+	var authSchema *AuthSchema
+
 	user := schema.parse()
 	pass := user.Password
 
 	db := Database.GetDB()
 	res := db.Where("name = ?", user.Name).First(&user)
 	if res.RowsAffected == 0 {
-		return InvalidUserNameErr
+		return nil, InvalidUserNameErr
 	}
 	if res.Error != nil {
-		return res.Error
+		return nil, res.Error
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass)); err != nil {
-		return InvalidUserPassErr
+	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass)); err != nil {
+		return nil, InvalidUserPassErr
 	}
-	return nil
+
+	authSchema, err = getAuthSchema(user.Name, user.Password)
+	return authSchema, err
+}
+
+func getAuthSchema(username string, pass string) (*AuthSchema, error) {
+	expirationTime := time.Now().Add(TTL * time.Minute)
+	claims := &Claims{
+		Username: username,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(JWT_KEY))
+	if err != nil {
+		return nil, err
+	}
+
+	return &AuthSchema{
+		Name:    username,
+		Token:   tokenString,
+		Expires: claims.ExpiresAt.String(),
+	}, nil
 }
