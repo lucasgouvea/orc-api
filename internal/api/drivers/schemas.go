@@ -1,5 +1,18 @@
 package drivers
 
+type DriverSchema struct {
+	Id        string `json:"id"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
+	Name      string `json:"name"`
+	Age       int    `json:"age"`
+	LicenseA  bool   `json:"license_a"`
+	LicenseB  bool   `json:"license_b"`
+	LicenseC  bool   `json:"license_c"`
+	LicenseD  bool   `json:"license_d"`
+	LicenseE  bool   `json:"license_e"`
+}
+
 type DriverPostSchema struct {
 	Name     string `json:"name" binding:"required"`
 	Age      int    `json:"age" binding:"required,min=18,max=100"`

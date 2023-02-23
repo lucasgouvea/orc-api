@@ -20,7 +20,7 @@ func RegisterRoutes(router *gin.RouterGroup) {
 func GetVehicles(ctx *gin.Context) {
 	var err error
 	var params Shared.Params
-	var vehicles []Vehicle
+	var schemas []VehicleSchema
 
 	query := ctx.Request.URL.Query()
 
@@ -29,12 +29,12 @@ func GetVehicles(ctx *gin.Context) {
 		return
 	}
 
-	if vehicles, err = listVehicles(params); err != nil {
+	if schemas, err = listVehicles(params); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, vehicles)
+	ctx.JSON(http.StatusOK, schemas)
 }
 
 func PostVehicle(ctx *gin.Context) {

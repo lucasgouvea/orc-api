@@ -2,6 +2,7 @@ package drivers
 
 import (
 	Shared "orc-api/internal/shared"
+	"strconv"
 )
 
 type Driver struct {
@@ -17,4 +18,19 @@ type Driver struct {
 
 func (Driver) TableName() string {
 	return "drivers"
+}
+
+func (d Driver) Schema() DriverSchema {
+	return DriverSchema{
+		Id:        strconv.FormatUint(uint64(d.ID), 10),
+		CreatedAt: d.CreatedAt.String(),
+		UpdatedAt: d.CreatedAt.String(),
+		Name:      d.Name,
+		Age:       d.Age,
+		LicenseA:  d.LicenseA,
+		LicenseB:  d.LicenseB,
+		LicenseC:  d.LicenseC,
+		LicenseD:  d.LicenseD,
+		LicenseE:  d.LicenseE,
+	}
 }

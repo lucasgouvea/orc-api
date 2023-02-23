@@ -8,12 +8,18 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-func listVehicles(params Shared.Params) ([]Vehicle, error) {
-	fields := []string{"id", "created_at", "model", "license_plate"}
+func listVehicles(params Shared.Params) ([]VehicleSchema, error) {
+	schemas := make([]VehicleSchema, 0)
+	fields := []string{"id", "created_at", "model_description", "license_plate"}
 	vehicles := []Vehicle{}
 	db := Database.GetDB()
 	err := db.Limit(params.Limit).Offset(params.Offset).Select(fields).Find(&vehicles).Error
-	return vehicles, err
+
+	for _, v := range vehicles {
+		schemas = append(schemas, v.Schema())
+	}
+
+	return schemas, err
 }
 
 func createVehicle(schema VehiclePostSchema) (*Vehicle, error) {

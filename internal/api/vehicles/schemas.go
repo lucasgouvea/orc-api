@@ -1,5 +1,13 @@
 package vehicles
 
+type VehicleSchema struct {
+	Id               string `json:"id"`
+	CreatedAt        string `json:"created_at"`
+	UpdatedAt        string `json:"updated_at"`
+	ModelDescription string `json:"model_description"`
+	LicensePlate     string `json:"license_plate"`
+}
+
 type VehiclePostSchema struct {
 	Model        string `json:"model" binding:"required"`
 	LicensePlate string `json:"license_plate" binding:"required"`

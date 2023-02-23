@@ -20,7 +20,7 @@ func RegisterRoutes(router *gin.RouterGroup) {
 func GetDrivers(ctx *gin.Context) {
 	var err error
 	var params Shared.Params
-	var drivers []Driver
+	var schemas []DriverSchema
 
 	query := ctx.Request.URL.Query()
 
@@ -29,16 +29,15 @@ func GetDrivers(ctx *gin.Context) {
 		return
 	}
 
-	if drivers, err = listDrivers(params); err != nil {
+	if schemas, err = listDrivers(params); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, drivers)
+	ctx.JSON(http.StatusOK, schemas)
 }
 
 func PostDriver(ctx *gin.Context) {
-	var driver *Driver
 	var err error
 
 	schema := DriverPostSchema{}
@@ -47,12 +46,12 @@ func PostDriver(ctx *gin.Context) {
 		return
 	}
 
-	if driver, err = createDriver(schema); err != nil {
+	if _, err = createDriver(schema); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, *driver)
+	ctx.JSON(http.StatusOK, schema)
 }
 
 func PatchDriver(ctx *gin.Context) {
