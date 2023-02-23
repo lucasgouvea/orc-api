@@ -20,7 +20,7 @@ func RegisterRoutes(router *gin.RouterGroup) {
 func GetUsers(ctx *gin.Context) {
 	var err error
 	var params Shared.Params
-	var users []User
+	var schemas []UserSchema
 
 	query := ctx.Request.URL.Query()
 
@@ -29,12 +29,12 @@ func GetUsers(ctx *gin.Context) {
 		return
 	}
 
-	if users, err = listUsers(params); err != nil {
+	if schemas, err = listUsers(params); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, users)
+	ctx.JSON(http.StatusOK, schemas)
 }
 
 func PostUser(ctx *gin.Context) {
@@ -51,14 +51,15 @@ func PostUser(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, user)
+	ctx.JSON(http.StatusOK, schema)
 }
 
 func PatchUser(ctx *gin.Context) {
 	var user *User
+	var schema UserSchema
 	var err error
 
-	schema := UserPatchSchema{}
+	patchSchema := UserPatchSchema{}
 	id := ctx.Param("id")
 
 	if err := ctx.ShouldBindWith(&schema, binding.JSON); err != nil {
@@ -66,7 +67,7 @@ func PatchUser(ctx *gin.Context) {
 		return
 	}
 
-	if user, err = schema.parse(id); err != nil {
+	if user, err = patchSchema.parse(id); err != nil {
 		Shared.HandleErr(ctx, err)
 		return
 	}
@@ -76,7 +77,7 @@ func PatchUser(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, user)
+	ctx.JSON(http.StatusOK, user.Schema())
 }
 
 func PostLogin(ctx *gin.Context) {

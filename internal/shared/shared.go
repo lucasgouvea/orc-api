@@ -16,7 +16,7 @@ type Params struct {
 }
 
 type Model struct {
-	ID        uint `gorm:"primaryKey"`
+	ID        uint64 `gorm:"primaryKey"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

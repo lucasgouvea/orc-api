@@ -2,6 +2,7 @@ package users
 
 import (
 	Shared "orc-api/internal/shared"
+	"strconv"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -11,11 +12,10 @@ type BaseSchema = any
 
 type User struct {
 	Shared.Model
-	CreatedAt    time.Time `json:"created_at"`
-	Name         string    `json:"name"`
-	Password     string    `json:"-"`
-	Token        string    `json:"-"`
-	TokenExpires time.Time `json:"-"`
+	Name         string
+	Password     string
+	Token        string
+	TokenExpires time.Time
 }
 
 func (User) TableName() string {
@@ -33,4 +33,13 @@ func (u *User) hashPassword() {
 func (u *User) checkPasswordHash(hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(u.Password))
 	return err == nil
+}
+
+func (u User) Schema() UserSchema {
+	return UserSchema{
+		Id:        strconv.FormatUint(uint64(u.ID), 10),
+		CreatedAt: u.CreatedAt.String(),
+		UpdatedAt: u.CreatedAt.String(),
+		Name:      u.Name,
+	}
 }

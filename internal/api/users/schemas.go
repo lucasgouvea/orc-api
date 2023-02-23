@@ -7,8 +7,14 @@ import (
 
 /* USERS */
 
+type UserSchema struct {
+	Id        string `json:"id"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
+	Name      string `json:"name"`
+}
+
 type UserPostSchema struct {
-	Id       string `json:"id"`
 	Name     string `json:"name" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
@@ -32,7 +38,7 @@ func (u UserPatchSchema) parse(_id string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	user.ID = uint(id)
+	user.ID = uint64(id)
 	user.Name = u.Name
 	user.Password = u.Password
 	return &user, err

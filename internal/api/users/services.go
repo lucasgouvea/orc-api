@@ -15,11 +15,17 @@ const JWT_KEY string = "SECRET"
 
 const TTL = 60
 
-func listUsers(params Shared.Params) ([]User, error) {
+func listUsers(params Shared.Params) ([]UserSchema, error) {
+	var schemas []UserSchema
+
 	users := []User{}
 	db := Database.GetDB()
 	err := db.Limit(params.Limit).Offset(params.Offset).Select("id", "created_at", "name").Find(&users).Error
-	return users, err
+
+	for _, u := range users {
+		schemas = append(schemas, u.Schema())
+	}
+	return schemas, err
 }
 
 func createUser(user *User) error {
