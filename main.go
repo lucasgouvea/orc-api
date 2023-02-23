@@ -63,6 +63,8 @@ func startAPI() error {
 		AllowCredentials: true,
 	}))
 
+	router.Use(Users.ValidateJWTHandler)
+
 	v1Router := router.Group("/v1")
 
 	Users.RegisterRoutes(v1Router)

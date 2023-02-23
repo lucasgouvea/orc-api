@@ -1,11 +1,13 @@
 package users
 
 import (
+	"net/http"
 	Database "orc-api/internal/database"
 	Errors "orc-api/internal/errors"
 	Shared "orc-api/internal/shared"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm/clause"
@@ -14,6 +16,8 @@ import (
 const JWT_KEY string = "SECRET"
 
 const TTL = 60
+
+/* USER */
 
 func listUsers(params Shared.Params) ([]UserSchema, error) {
 	schemas := make([]UserSchema, 0)
@@ -25,6 +29,17 @@ func listUsers(params Shared.Params) ([]UserSchema, error) {
 		schemas = append(schemas, u.Schema())
 	}
 	return schemas, err
+}
+
+func findByUserName(name string) (*User, error) {
+	var user *User
+
+	db := Database.GetDB()
+	res := db.Model(&User{}).Where("name = ?", name).First(&user)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	return user, nil
 }
 
 func createUser(user *User) error {
@@ -46,6 +61,8 @@ func updateUser(user *User) error {
 	}
 	return res.Error
 }
+
+/* LOGIN */
 
 func login(schema PostLoginSchema) (*AuthSchema, error) {
 	var err error
@@ -96,4 +113,40 @@ func getAuthSchema(username string, pass string) (*AuthSchema, error) {
 		Expires:     claims.ExpiresAt.String(),
 		ExpiresTime: claims.ExpiresAt.Time,
 	}, nil
+}
+
+func parseJWT(tokenString string) (*jwt.Token, error) {
+	return jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
+		return []byte(JWT_KEY), nil
+	})
+}
+
+var ValidateJWTHandler = func(c *gin.Context) {
+	var user *User
+	var err error
+
+	if c.Request.URL.Path == "/v1/login" {
+		return
+	}
+	auth := c.GetHeader("Authorization")
+	if len(auth) != 135 {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+	tokenString := auth[len("Bearer "):]
+	token, _ := parseJWT(tokenString)
+	if token.Valid == false {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+	name := token.Claims.(jwt.MapClaims)["username"].(string)
+	if user, err = findByUserName(name); err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+	if tokenString != user.Token {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
 }
