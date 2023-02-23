@@ -18,6 +18,7 @@ type Env struct {
 	DB_NAME               string
 	GO_ENV                string
 	DEFAULT_USER_PASSWORD string
+	JWT_KEY               string
 }
 
 func getGoEnv() GoEnv {
@@ -35,6 +36,7 @@ func GetEnvVars() Env {
 		DB_NAME:               os.Getenv("DB_NAME"),
 		GO_ENV:                os.Getenv("GO_ENV"),
 		DEFAULT_USER_PASSWORD: os.Getenv("DEFAULT_USER_PASSWORD"),
+		JWT_KEY:               os.Getenv("JWT_KEY"),
 	}
 }
 

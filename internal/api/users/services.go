@@ -13,8 +13,6 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-const JWT_KEY string = "SECRET"
-
 const TTL = 60
 
 /* USER */
@@ -102,7 +100,8 @@ func getAuthSchema(username string, pass string) (*AuthSchema, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(JWT_KEY))
+	jwt_key := Shared.GetEnvVars().JWT_KEY
+	tokenString, err := token.SignedString([]byte(jwt_key))
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +116,8 @@ func getAuthSchema(username string, pass string) (*AuthSchema, error) {
 
 func parseJWT(tokenString string) (*jwt.Token, error) {
 	return jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
-		return []byte(JWT_KEY), nil
+		jwt_key := Shared.GetEnvVars().JWT_KEY
+		return []byte(jwt_key), nil
 	})
 }
 
