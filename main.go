@@ -52,7 +52,7 @@ func startAPI() error {
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"https://orc.lucasgouvea.com"},
 		AllowMethods:     []string{"GET", "PATCH", "POST", "DELETE"},
-		AllowHeaders:     []string{"Origin", "content-type"},
+		AllowHeaders:     []string{"Origin", "content-type", "authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
