@@ -130,22 +130,22 @@ var ValidateJWTHandler = func(c *gin.Context) {
 	}
 	auth := c.GetHeader("Authorization")
 	if len(auth) != 135 {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": InvalidAuthHeaderErr.Error()})
 		return
 	}
 	tokenString := auth[len("Bearer "):]
-	token, _ := parseJWT(tokenString)
+	token, err := parseJWT(tokenString)
 	if token.Valid == false {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 	name := token.Claims.(jwt.MapClaims)["username"].(string)
 	if user, err = findByUserName(name); err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": InvalidJWTUserErr.Error()})
 		return
 	}
 	if tokenString != user.Token {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": InvalidJWTTokenErr.Error()})
 		return
 	}
 
