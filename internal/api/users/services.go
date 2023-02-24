@@ -102,7 +102,6 @@ func login(schema PostLoginSchema) (*AuthSchema, error) {
 		return nil, BlockedUserErr
 	}
 
-	incrementLoginAttempt(user.Name)
 	attempts := loginAttempts[user.Name]
 
 	if attempts >= MAX_LOGIN_ATTEMPTS {
@@ -113,6 +112,7 @@ func login(schema PostLoginSchema) (*AuthSchema, error) {
 	}
 
 	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass)); err != nil {
+		incrementLoginAttempt(user.Name)
 		return nil, InvalidUserPassErr(int64(attempts))
 	}
 
