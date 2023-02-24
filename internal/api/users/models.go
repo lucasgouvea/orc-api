@@ -16,6 +16,7 @@ type User struct {
 	Password     string
 	Token        string
 	TokenExpires time.Time
+	Blocked      bool
 }
 
 func (User) TableName() string {
@@ -41,5 +42,6 @@ func (u User) Schema() UserSchema {
 		CreatedAt: u.CreatedAt.String(),
 		UpdatedAt: u.CreatedAt.String(),
 		Name:      u.Name,
+		Blocked:   u.Blocked,
 	}
 }

@@ -12,6 +12,7 @@ type UserSchema struct {
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 	Name      string `json:"name"`
+	Blocked   bool   `json:"blocked"`
 }
 
 type UserPostSchema struct {

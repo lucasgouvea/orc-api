@@ -15,6 +15,9 @@ import (
 )
 
 const TTL = 60
+const MAX_LOGIN_ATTEMPTS = 10
+
+var loginAttempts = make(map[string]int)
 
 /* USER */
 
@@ -61,7 +64,24 @@ func updateUser(user *User) error {
 	return res.Error
 }
 
+func blockUser(name string) error {
+	db := Database.GetDB()
+	if err := db.Model(User{}).Where("name = ?", name).Updates(User{Blocked: true}).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 /* LOGIN */
+
+func incrementLoginAttempt(name string) {
+	attempt := loginAttempts[name]
+	loginAttempts[name] = attempt + 1
+}
+
+func resetLoginAttempt(name string) {
+	loginAttempts[name] = 0
+}
 
 func login(schema PostLoginSchema) (*AuthSchema, error) {
 	var err error
@@ -78,8 +98,22 @@ func login(schema PostLoginSchema) (*AuthSchema, error) {
 	if res.Error != nil {
 		return nil, res.Error
 	}
+	if user.Blocked {
+		return nil, BlockedUserErr
+	}
+
+	incrementLoginAttempt(user.Name)
+	attempts := loginAttempts[user.Name]
+
+	if attempts >= MAX_LOGIN_ATTEMPTS {
+		if err := blockUser(user.Name); err != nil {
+			return nil, err
+		}
+		resetLoginAttempt(user.Name)
+	}
+
 	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass)); err != nil {
-		return nil, InvalidUserPassErr
+		return nil, InvalidUserPassErr(int64(attempts))
 	}
 
 	authSchema, err = getAuthSchema(user.Name, user.Password)

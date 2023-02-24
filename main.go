@@ -41,14 +41,8 @@ func main() {
 		panic(err)
 	}
 
-	if len(args) > 1 {
-		if args[1] == "seed" {
-			seed()
-		}
-	} else {
-		if err := startAPI(); err != nil {
-			panic(err)
-		}
+	if err := startAPI(); err != nil {
+		panic(err)
 	}
 }
 
@@ -80,8 +74,4 @@ func migrate() error {
 	fmt.Println(" *** Running migrations ***")
 	models := []any{&Users.User{}, &Drivers.Driver{}, &Vehicles.Vehicle{}, &Company.Company{}, &Routes.RoutePlan{}}
 	return Database.Migrate(models)
-}
-
-func seed() {
-	Users.Seed()
 }
