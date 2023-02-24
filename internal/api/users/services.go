@@ -5,6 +5,7 @@ import (
 	Database "orc-api/internal/database"
 	Errors "orc-api/internal/errors"
 	Shared "orc-api/internal/shared"
+	"regexp"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -124,12 +125,15 @@ func parseJWT(tokenString string) (*jwt.Token, error) {
 var ValidateJWTHandler = func(c *gin.Context) {
 	var user *User
 	var err error
+	var matchedRegExp bool
 
 	if c.Request.URL.Path == "/v1/login" {
 		return
 	}
+
 	auth := c.GetHeader("Authorization")
-	if len(auth) != 135 {
+	matchedRegExp, err = regexp.MatchString("^Bearer.+$", auth)
+	if matchedRegExp == false || err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": InvalidAuthHeaderErr.Error()})
 		return
 	}
