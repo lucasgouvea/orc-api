@@ -34,6 +34,7 @@ func main() {
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("required_company_type", Company.ValidateCompanyType)
 		v.RegisterValidation("optional_company_type", Company.ValidateOptionalCompanyType)
+		v.RegisterValidation("route_type", Routes.ValidateRouteType, true)
 	}
 
 	Database.Start(Shared.GetEnvVars().DB_HOST, Shared.GetEnvVars().DB_USER, Shared.GetEnvVars().DB_PASSWORD, Shared.GetEnvVars().DB_NAME)
@@ -72,6 +73,6 @@ func startAPI() error {
 
 func migrate() error {
 	fmt.Println(" *** Running migrations ***")
-	models := []any{&Users.User{}, &Drivers.Driver{}, &Vehicles.Vehicle{}, &Company.Company{}, &Routes.RoutePlan{}}
+	models := []any{&Users.User{}, &Drivers.Driver{}, &Vehicles.Vehicle{}, &Company.Company{}, &Routes.RoutePlan{}, &Routes.Route{}}
 	return Database.Migrate(models)
 }

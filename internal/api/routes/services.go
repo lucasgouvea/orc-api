@@ -8,6 +8,8 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+/* Route Plan */
+
 func listRoutePlans(params Shared.Params) ([]RoutePlanSchema, error) {
 	plans := []RoutePlan{}
 	schemas := []RoutePlanSchema{}
@@ -39,6 +41,32 @@ func updateRoutePlan(id int, schema RoutePlanPatchSchema) error {
 func deleteRoutePlan(id int) error {
 	db := Database.GetDB()
 	res := db.Delete(&RoutePlan{}, id)
+	if res.Error == nil && res.RowsAffected == 0 {
+		return Errors.ResourceNotFoundErr
+	}
+	return res.Error
+}
+
+/* Route */
+
+func createRoute(r Route) error {
+	db := Database.GetDB()
+	err := db.Clauses(clause.Returning{}).Create(&r).Error
+	return err
+}
+
+func updateRoute(id int, route map[string]any) error {
+	db := Database.GetDB()
+	res := db.Model(Route{}).Where("id = ?", id).Updates(route)
+	if res.Error == nil && res.RowsAffected == 0 {
+		return Errors.ResourceNotFoundErr
+	}
+	return res.Error
+}
+
+func deleteRoute(id int) error {
+	db := Database.GetDB()
+	res := db.Delete(&Route{}, id)
 	if res.Error == nil && res.RowsAffected == 0 {
 		return Errors.ResourceNotFoundErr
 	}

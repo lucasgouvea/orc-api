@@ -32,6 +32,10 @@ func (RoutePlan) TableName() string {
 	return "route_plans"
 }
 
+func (Route) TableName() string {
+	return "routes"
+}
+
 func (rp RoutePlan) Schema() RoutePlanSchema {
 	return RoutePlanSchema{
 		Id:        strconv.FormatUint(uint64(rp.ID), 10),
