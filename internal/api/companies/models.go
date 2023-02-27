@@ -28,7 +28,7 @@ func (c Company) getType() companyType {
 		}
 	case int(INTERMEDIATED):
 		{
-			return CONTRACT
+			return INTERMEDIATED
 		}
 	}
 	panic(InvalidCompanyTypeErr)
